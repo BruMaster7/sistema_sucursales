@@ -11,48 +11,72 @@ using namespace std;
 Nodo sucursales[MAX_SUCURSALES];
 int contadorSucursales = 0;
 
-void menu() {
+void sucursalmenu() {
 	int opmenu;
 	int id;
+	cout<<"**************************************"<<endl;
+	cout<<"*    Mantenimiento de sucursales     *"<<endl;
+	cout<<"*Seleccione que acción desea realizar*"<<endl;
+	
+	cout<<"*1-Sucursales actuales               *"<<endl;
+	cout<<"*2-Agregar sucursal                  *"<<endl;
+	cout<<"*3-Modificar sucursal                *"<<endl;
+	switch (opmenu) {
+	case 1: 
+		sucursalesActuales();
+		break;
+	case 2:
+		agregarSucursal();
+		break;
+	case 3:
+		id = ingresarId();
+		modificarSucursal(id);
+		break;
+	case 4:
+		id = ingresarId();
+		eliminarSucursal(id);
+		break;
+	default:
+		cout<<"Esa opción no está disponible, elija otra por favor"<<endl;
+		system ("pause");
+		system("cls");
+	}
+	
+	
+	
+}
+
+
+
+void menu() {
+	int opmenu;
+	int id; // Sacar al final
 	do {
 		cout<<"**************************************"<<endl;
 		cout<<"*    Mantenimiento de sucursales     *"<<endl;
 		cout<<"*Seleccione que acción desea realizar*"<<endl;
-		cout<<"*1-Sucursales actuales               *"<<endl;
-		cout<<"*2-Agregar sucursal                  *"<<endl;
-		cout<<"*3-Modificar sucursal                *"<<endl;
-		cout<<"*4-Eliminar Sucursal                 *"<<endl;
-		cout<<"*5-Ver rutas actuales                *"<<endl;
-		cout<<"*6-Modificar ruta                    *"<<endl;
-		cout<<"*7-Buscar ruta optima                *"<<endl;
+
+		cout<<"*1-Eliminar Sucursal                 *"<<endl;
+		cout<<"*2-Ver rutas actuales                *"<<endl;
+		cout<<"*3-Modificar ruta                    *"<<endl;
+		cout<<"*4-Buscar ruta optima                *"<<endl;
 		cout<<"*8-Salir                             *"<<endl;
 		cout<<"**************************************"<<endl;
 		cin >> opmenu;
 		switch (opmenu) {
 		case 1: 
-			sucursalesActuales();
-			break;
-		case 2:
-			agregarSucursal();
+			sucursalmenu();
 			break;
 		case 3:
-			id = ingresarId();
-			modificarSucursal(id);
-			break;
-		case 4:
-			id = ingresarId();
-			eliminarSucursal(id);
-			break;
-		case 5:
 			rutasActuales();
 			break;
-		case 6:
+		case 4:
 			modificarRuta();
 			break;
-		case 7:
+		case 5:
 			rutaOptima();
 			break;
-		case 8:
+		case 6:
 			cout<<"Adiós\n";
 			break;
 		default:
@@ -60,7 +84,7 @@ void menu() {
 			system ("pause");
 			system("cls");
 		}
-	} while(opmenu != 8);
+	} while(opmenu != 6);
 }
 
 void sucursalesActuales() {

@@ -16,6 +16,9 @@ typedef struct Nodo {
 } Nodo;
 
 void menu();
+void sucursalmenu();
+
+
 int ingresarId();
 void sucursalesActuales();
 void agregarSucursal();
@@ -24,5 +27,6 @@ void eliminarSucursal(int id);
 void rutasActuales();
 void modificarRuta();
 void rutaOptima();
+
 
 

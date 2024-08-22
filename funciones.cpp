@@ -21,6 +21,7 @@ void sucursalmenu() {
 	cout<<"*1-Sucursales actuales               *"<<endl;
 	cout<<"*2-Agregar sucursal                  *"<<endl;
 	cout<<"*3-Modificar sucursal                *"<<endl;
+	cout<<"*4-Eliminar sucursal                *"<<endl;
 	switch (opmenu) {
 	case 1: 
 		sucursalesActuales();
@@ -56,7 +57,7 @@ void menu() {
 		cout<<"*    Mantenimiento de sucursales     *"<<endl;
 		cout<<"*Seleccione que acción desea realizar*"<<endl;
 
-		cout<<"*1-Eliminar Sucursal                 *"<<endl;
+		cout<<"*1-Gestionar Sucursales                *"<<endl;
 		cout<<"*2-Ver rutas actuales                *"<<endl;
 		cout<<"*3-Modificar ruta                    *"<<endl;
 		cout<<"*4-Buscar ruta optima                *"<<endl;

@@ -15,18 +15,32 @@ typedef struct Nodo {
 	struct Nodo *siguiente;
 } Nodo;
 
-void menu();
+struct AdyacenciaNodo {
+	int destino;   // Índice del nodo destino
+	int peso;      // Peso o costo de la ruta, si aplica
+	AdyacenciaNodo* siguiente;  // Apuntador al siguiente nodo
+};
+
+struct Grafo {
+	int numSucursales;  // Número de sucursales (vértices)
+	AdyacenciaNodo** listaAdyacencia;  // Arreglo de listas de adyacencia
+};
+
+
 void sucursalmenu();
-
-
-int ingresarId();
+void menu();
 void sucursalesActuales();
+int ingresarId();
 void agregarSucursal();
 void modificarSucursal(int id);
 void eliminarSucursal(int id);
-void rutasActuales();
-void modificarRuta();
+void rutasActuales(Grafo* grafo);
+void modificarRuta(Grafo* grafo);
 void rutaOptima();
+AdyacenciaNodo* crearNodo(int destino, int peso);
+Grafo* crearGrafo(int V);
+void agregarArista(Grafo* grafo, int src, int dest, int peso);
+void mostrarGrafo(Grafo* grafo);
 
 
 

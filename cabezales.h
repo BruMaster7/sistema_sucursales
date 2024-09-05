@@ -1,6 +1,11 @@
+#ifndef CABEZALES_H // Include guard: si no ha sido definido, defínelo
+#define CABEZALES_H
+
 #include <iostream>
 #include <stdio.h>
 using namespace std;
+
+#define MAX_SUCURSALES 100
 
 typedef struct {
 	int id;
@@ -26,6 +31,10 @@ struct Grafo {
 	AdyacenciaNodo** listaAdyacencia;  // Arreglo de listas de adyacencia
 };
 
+// Declaración de variables globales como `extern`
+extern Nodo sucursales[MAX_SUCURSALES];
+extern int contadorSucursales;
+extern int autoIncrementalID;
 
 void sucursalmenu();
 void menu();
@@ -42,5 +51,9 @@ Grafo* crearGrafo(int V);
 void agregarArista(Grafo* grafo, int src, int dest, int peso);
 void mostrarGrafo(Grafo* grafo);
 
+void guardarSucursalesEnArchivo();
+void cargarSucursalesDesdeArchivo();
+
+#endif // Fin del include guard
 
 

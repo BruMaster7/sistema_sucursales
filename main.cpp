@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdio.h>
-#include "funciones.cpp"
+#include "menu.cpp"
 using namespace std;
 
 

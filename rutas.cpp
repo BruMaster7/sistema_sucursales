@@ -31,17 +31,20 @@ Grafo* crearGrafo(int V) {
 	return grafo;
 }
 
+void inicializarGrafoConCentral(Grafo* grafo, int nodoCentral) {
+	for (int i = 0; i < grafo->numSucursales; ++i) {
+		if (i != nodoCentral) { // Evitar conectar el nodo central a sí mismo
+			agregarArista(grafo, nodoCentral, i, 0); // 0 es un peso default ya que es la sucursal central
+		}
+	}
+}
+
 // Función para agregar una arista al grafo no dirigido
 void agregarArista(Grafo* grafo, int src, int dest, int peso) {
 	// Agregar una arista de src a dest. Un nuevo nodo se añade a la lista de adyacencia de src
 	AdyacenciaNodo* nuevoNodo = crearNodo(dest, peso);
 	nuevoNodo->siguiente = grafo->listaAdyacencia[src];
 	grafo->listaAdyacencia[src] = nuevoNodo;
-	
-	// Como el grafo es no dirigido, agregar también una arista de dest a src
-	nuevoNodo = crearNodo(src, peso);
-	nuevoNodo->siguiente = grafo->listaAdyacencia[dest];
-	grafo->listaAdyacencia[dest] = nuevoNodo;
 }
 
 // Función para mostrar las listas de adyacencia del grafo

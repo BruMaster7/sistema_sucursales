@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <vector>
+
 using namespace std;
 
 #define MAX_SUCURSALES 100
@@ -13,6 +15,7 @@ typedef struct {
 	char departamento[50];
 	char telefono[20];
 	char responsable[100];
+	vector<int> conexionesSalientes; // Lista de IDs de sucursales a las que está conectada esta sucursal
 } Sucursal;
 
 typedef struct Nodo {
@@ -48,6 +51,7 @@ void modificarRuta(Grafo* grafo);
 void rutaOptima();
 AdyacenciaNodo* crearNodo(int destino, int peso);
 Grafo* crearGrafo(int V);
+void inicializarGrafoConCentral(Grafo* grafo, int nodoCentral);
 void agregarArista(Grafo* grafo, int src, int dest, int peso);
 void mostrarGrafo(Grafo* grafo);
 

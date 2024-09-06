@@ -1,8 +1,10 @@
 #include "sucursales.cpp"
+#include "dijkstra.cpp"
 #include <iostream>
 #include <cstring>  // Para funciones de manejo de cadenas
 #include <cstdio>   // Para funciones de entrada/salida estándar
 #include <fstream>  // Para manejo de archivos
+
 
 
 using namespace std;
@@ -16,17 +18,17 @@ AdyacenciaNodo* crearNodo(int destino, int peso) {
 	return nuevoNodo;
 }
 
-// Función para crear un grafo de V vértices
-Grafo* crearGrafo(int V) {
+// Función para crear un grafo de v vértices
+Grafo* crearGrafo(int v) {
 	Grafo* grafo = new Grafo;
-	grafo->numSucursales = V;
+	grafo->numSucursales = v;
 	
-	// Crear un arreglo de listas de adyacencia. El tamaño del arreglo es V
-	grafo->listaAdyacencia = new AdyacenciaNodo*[V];
+	// Crear un arreglo de listas de adyacencia. El tamaño del arreglo es v
+	grafo->listaAdyacencia = new list<AdyacenciaNodo*>[v];
 	
 	// Inicializar cada lista de adyacencia como vacía
-	for (int i = 0; i < V; ++i)
-		grafo->listaAdyacencia[i] = nullptr;
+	//for (int i = 0; i < v; ++i)
+		//grafo->listaAdyacencia[i] = nullptr;
 	
 	return grafo;
 }
@@ -34,29 +36,35 @@ Grafo* crearGrafo(int V) {
 void inicializarGrafoConCentral(Grafo* grafo, int nodoCentral) {
 	for (int i = 0; i < grafo->numSucursales; ++i) {
 		if (i != nodoCentral) { // Evitar conectar el nodo central a sí mismo
-			agregarArista(grafo, nodoCentral, i, 0); // 0 es un peso default ya que es la sucursal central
+			agregarArista(grafo, nodoCentral, i, INF); // 0 es un peso default ya que es la sucursal central
 		}
 	}
 }
 
-// Función para agregar una arista al grafo no dirigido
+// Función para agregar una arista al grafo dirigido
 void agregarArista(Grafo* grafo, int src, int dest, int peso) {
 	// Agregar una arista de src a dest. Un nuevo nodo se añade a la lista de adyacencia de src
+	// En caso de que ya exista, sobreescribe
+	for(auto &nodo : grafo->listaAdyacencia[src]) {
+		if (nodo->destino == dest) {
+			nodo->peso = peso;
+			return;
+		}
+	}
 	AdyacenciaNodo* nuevoNodo = crearNodo(dest, peso);
-	nuevoNodo->siguiente = grafo->listaAdyacencia[src];
-	grafo->listaAdyacencia[src] = nuevoNodo;
+	grafo->listaAdyacencia[src].push_back(nuevoNodo);
 }
 
 // Función para mostrar las listas de adyacencia del grafo
 void mostrarGrafo(Grafo* grafo) {
 	for (int v = 0; v < grafo->numSucursales; ++v) {
-		AdyacenciaNodo* temp = grafo->listaAdyacencia[v];
-		cout << "\n Lista de adyacencia de la sucursal " << v << "\n";
-		while (temp) {
-			cout << " -> " << temp->destino << " (Peso: " << temp->peso << ")";
-			temp = temp->siguiente;
+		for (auto &nodo : grafo->listaAdyacencia[v]) {
+			
+			cout << "\n Lista de adyacencia de la sucursal " << v << "\n";
+
+			cout << " -> " << nodo->destino << " (Peso: " << nodo->peso << ")";
+			cout << endl;
 		}
-		cout << endl;
 	}
 }
 
@@ -64,17 +72,10 @@ void mostrarGrafo(Grafo* grafo) {
 void rutasActuales(Grafo* grafo) {
 	cout << "Rutas actuales entre sucursales:" << endl;
 	for (int i = 0; i < contadorSucursales; i++) {  // Iterar sobre las sucursales registradas
-		if (i >= grafo->numSucursales) {
-			break;  // Salir si el índice supera el número de sucursales en el grafo
-		}
 		
-		AdyacenciaNodo* nodoActual = grafo->listaAdyacencia[i];
-		if (nodoActual == nullptr) {
-			continue;  // Si no hay rutas desde esta sucursal, pasar a la siguiente
-		}
 		
 		cout << "Sucursales conectadas desde " << sucursales[i].sucursal.nombre << ":" << endl;
-		while (nodoActual != nullptr) {
+		for (auto &nodoActual : grafo->listaAdyacencia[i]) {
 			int destino = nodoActual->destino;
 			
 			// Verificar si el destino tiene una sucursal asignada
@@ -83,7 +84,6 @@ void rutasActuales(Grafo* grafo) {
 					<< " (Kilometros: " << nodoActual->peso << ")" << endl;
 			}
 			
-			nodoActual = nodoActual->siguiente;
 		}
 	}
 	system("pause");
@@ -101,11 +101,13 @@ void modificarRuta(Grafo* grafo) {
 	
 	agregarArista(grafo, src, dest, peso);
 	cout << "Ruta modificada/añadida exitosamente." << endl;
+	system("pause");
+	system("cls");
 }
 
 
-void rutaOptima() {
-	cout << "En proceso de creación..." << endl;
+void rutaOptima(Grafo* grafo) {
+	shortestPath(grafo, 0);
 }
 
 

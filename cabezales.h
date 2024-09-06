@@ -4,10 +4,14 @@
 #include <iostream>
 #include <stdio.h>
 #include <vector>
+#include <list>
 
 using namespace std;
 
 #define MAX_SUCURSALES 100
+// Define INF como un numero que representa el infinito
+#define INF 0x3f3f3f3f
+
 
 typedef struct {
 	int id;
@@ -31,7 +35,7 @@ struct AdyacenciaNodo {
 
 struct Grafo {
 	int numSucursales;  // Número de sucursales (vértices)
-	AdyacenciaNodo** listaAdyacencia;  // Arreglo de listas de adyacencia
+	list<AdyacenciaNodo*>* listaAdyacencia;  // Lista de listas de adyacencia
 };
 
 // Declaración de variables globales como `extern`

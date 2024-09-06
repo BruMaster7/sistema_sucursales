@@ -70,7 +70,7 @@ void menu() {
 			modificarRuta(grafo);
 			break;
 		case 4:
-			rutaOptima();
+			rutaOptima(grafo);
 			break;
 		case 6:
 			cout << "Gracias por utilizar el sistema de gestion de sucursales\n";

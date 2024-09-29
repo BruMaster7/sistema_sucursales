@@ -5,7 +5,6 @@ typedef pair<int, int> iPair;
 
 // Function to print shortest paths from source
 void shortestPath(Grafo* grafo, int src) {
-	cout<<"Aun toy vivo o no"<<endl;
 	// Create a priority queue to store vertices being processed
 	// Priority queue sorted by the first element of the pair (distance)
 	priority_queue<iPair, vector<iPair>, greater<iPair>> pq;

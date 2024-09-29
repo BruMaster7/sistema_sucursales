@@ -4,6 +4,9 @@
 #include <cstring>  // Para funciones de manejo de cadenas
 #include <cstdio>   // Para funciones de entrada/salida estándar
 #include <fstream>  // Para manejo de archivos
+#include <sstream>
+#include <string>
+
 
 
 
@@ -120,10 +123,10 @@ void guardarSucursalesEnArchivo() {
 	}
 	
 	for (int i = 0; i < contadorSucursales; i++) {
-		archivo << sucursales[i].sucursal.id << "\n";
-		archivo << sucursales[i].sucursal.nombre << "\n";
-		archivo << sucursales[i].sucursal.departamento << "\n";
-		archivo << sucursales[i].sucursal.telefono << "\n";
+		archivo << sucursales[i].sucursal.id << ", ";
+		archivo << sucursales[i].sucursal.nombre << ", ";
+		archivo << sucursales[i].sucursal.departamento << ", ";
+		archivo << sucursales[i].sucursal.telefono << ", ";
 		archivo << sucursales[i].sucursal.responsable << "\n";
 	}
 	
@@ -137,15 +140,27 @@ void cargarSucursalesDesdeArchivo() {
 		return;
 	}
 	
-	while (!archivo.eof() && contadorSucursales < MAX_SUCURSALES) {
-		archivo >> sucursales[contadorSucursales].sucursal.id;
-		archivo.ignore(); // Ignorar el salto de línea después del ID
-		archivo.getline(sucursales[contadorSucursales].sucursal.nombre, 100);
-		archivo.getline(sucursales[contadorSucursales].sucursal.departamento, 50);
-		archivo.getline(sucursales[contadorSucursales].sucursal.telefono, 20);
-		archivo.getline(sucursales[contadorSucursales].sucursal.responsable, 100);
+	string linea;
+	while (getline(archivo, linea) && contadorSucursales < MAX_SUCURSALES) {
+		stringstream ss(linea);
+		string idStr, nombreStr, departamentoStr, telefonoStr, responsableStr;
 		
-		if (archivo.eof()) break;
+		// Leer y parsear cada campo separado por comas
+		getline(ss, idStr, ',');
+		sucursales[contadorSucursales].sucursal.id = stoi(idStr);
+		
+		getline(ss, nombreStr, ',');
+		strcpy(sucursales[contadorSucursales].sucursal.nombre, nombreStr.c_str());
+		
+		getline(ss, departamentoStr, ',');
+		strcpy(sucursales[contadorSucursales].sucursal.departamento, departamentoStr.c_str());
+		
+		getline(ss, telefonoStr, ',');
+		strcpy(sucursales[contadorSucursales].sucursal.telefono, telefonoStr.c_str());
+		
+		getline(ss, responsableStr);
+		strcpy(sucursales[contadorSucursales].sucursal.responsable, responsableStr.c_str());
+		
 		contadorSucursales++;
 		if (sucursales[contadorSucursales - 1].sucursal.id >= autoIncrementalID) {
 			autoIncrementalID = sucursales[contadorSucursales - 1].sucursal.id + 1;
@@ -154,4 +169,6 @@ void cargarSucursalesDesdeArchivo() {
 	
 	archivo.close();
 }
+
+
 

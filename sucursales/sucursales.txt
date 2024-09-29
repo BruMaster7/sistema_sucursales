@@ -1,15 +1,4 @@
-1
-Rocha Repuestos
-Rocha
-4475
-Bruno
-2
-Maldonado Repuestos
-Maldonado
-4400
-Lucas
-3
-Riverita
-Rivera
-4330
-Fernando
+1,  Montevideo Repuestos,  Montevideo,  19503433,  Maximiliano Silvera 
+2,  Maldonado Repuestos,  Maldonado,  42228907,  Facundo Curbelo 
+3,  Rocha Repuestos,  Rocha,  44729009,  Javier Busquets 
+4, Minas Repuestos, Lavalleja, 44428907, Franco Larrosa

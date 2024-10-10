@@ -1,4 +1,4 @@
-1,  Montevideo Repuestos,  Montevideo,  19503433,  Maximiliano Silvera 
-2,  Maldonado Repuestos,  Maldonado,  42228907,  Facundo Curbelo 
-3,  Rocha Repuestos,  Rocha,  44729009,  Javier Busquets 
-4, Minas Repuestos, Lavalleja, 44428907, Franco Larrosa
+1, Montevideo Repuestos, Montevideo, 0800 3030, Facu Towers
+2, Maldonado Repuestos , Maldonado, 442678876, Washi Aguerre
+3, Lavalleja Repuestos, Lavalleja, 444213321, Loco Abreu
+4, Chuy Repuestos, Rocha, 44598217, Matheus Babi

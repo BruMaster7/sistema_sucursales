@@ -94,15 +94,29 @@ void rutasActuales(Grafo* grafo) {
 }
 
 void modificarRuta(Grafo* grafo) {
-	int src, dest, peso;
-	cout << "Ingrese el índice de la sucursal de origen: ";
-	cin >> src;
-	cout << "Ingrese el índice de la sucursal de destino: ";
-	cin >> dest;
+	system("cls");
+	
+	mostrarSucursalesConId();
+	
+	int idSrc, idDest, peso;
+	cout << "Ingrese el ID de la sucursal de origen: ";
+	cin >> idSrc;
+	cout << "Ingrese el ID de la sucursal de destino: ";
+	cin >> idDest;
 	cout << "Ingrese la distancia de la ruta: ";
 	cin >> peso;
 	
+	// Convertir ID a índice
+	int src = obtenerIndicePorId(idSrc);
+	int dest = obtenerIndicePorId(idDest);
+	
+	if (src == -1 || dest == -1) {
+		cout << "Error: una o ambas sucursales no fueron encontradas." << endl;
+		return;
+	}
+	
 	agregarArista(grafo, src, dest, peso);
+	guardarRutasEnArchivo(grafo);
 	cout << "Ruta modificada/añadida exitosamente." << endl;
 	system("pause");
 	system("cls");
@@ -132,6 +146,9 @@ void guardarSucursalesEnArchivo() {
 	
 	archivo.close();
 }
+
+
+
 
 void cargarSucursalesDesdeArchivo() {
 	ifstream archivo("sucursales/sucursales.txt");
@@ -167,8 +184,81 @@ void cargarSucursalesDesdeArchivo() {
 		}
 	}
 	
+	
 	archivo.close();
 }
 
 
+void guardarRutasEnArchivo(Grafo* grafo) {
+	ofstream archivo("sucursales/rutas.txt");
+	if (!archivo) {
+		cerr << "Error al abrir el archivo para guardar las rutas." << endl;
+		return;
+	}
+	
+	for (int i = 0; i < contadorSucursales; i++) {
+		for (auto &nodoActual : grafo->listaAdyacencia[i]) {
+			int destino = nodoActual->destino;
+			int peso = nodoActual->peso;
+			
+			// Guardar la ruta solo si el destino es válido y tiene una sucursal asociada
+			if (destino < contadorSucursales) {
+				archivo << sucursales[i].sucursal.id << ", "
+					<< sucursales[destino].sucursal.id << ", "
+					<< peso << "\n";
+			}
+		}
+	}
+	
+	archivo.close();
+}
 
+void cargarRutasDesdeArchivo(Grafo* grafo) {
+	ifstream archivo("sucursales/rutas.txt");
+	if (!archivo) {
+		cerr << "Error al abrir el archivo de rutas o el archivo no existe." << endl;
+		return;
+	}
+	
+	string linea;
+	while (getline(archivo, linea)) {
+		stringstream ss(linea);
+		string idSrcStr, idDestStr, pesoStr;
+		
+		// Leer y parsear cada campo separado por comas
+		getline(ss, idSrcStr, ',');
+		getline(ss, idDestStr, ',');
+		getline(ss, pesoStr, ',');
+		
+		int idSrc = stoi(idSrcStr);
+		int idDest = stoi(idDestStr);
+		int peso = stoi(pesoStr);
+		
+		// Convertir IDs a índices
+		int src = obtenerIndicePorId(idSrc);
+		int dest = obtenerIndicePorId(idDest);
+		
+		// Verificar que las sucursales existan antes de agregar la arista
+		if (src != -1 && dest != -1) {
+			agregarArista(grafo, src, dest, peso);
+		}
+	}
+	
+	archivo.close();
+}
+int obtenerIndicePorId(int id) {
+	for (int i = 0; i < contadorSucursales; i++) {
+		if (sucursales[i].sucursal.id == id) {
+			return i; // Retornar el índice si encuentra la sucursal	
+		}
+	}
+	return -1; // Retornar -1 si no se encuentra la sucursal
+}
+
+void mostrarSucursalesConId() {
+	cout << "IDs de las Sucursales registradas:" << endl;
+	for (int i = 0; i < contadorSucursales; i++) {
+		cout << "ID: " << sucursales[i].sucursal.id
+			<< " -" << sucursales[i].sucursal.nombre << endl;
+	}
+}

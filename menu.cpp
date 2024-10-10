@@ -42,11 +42,12 @@ void sucursalmenu() {
 
 // Menú principal
 void menu() {
-	cargarSucursalesDesdeArchivo(); // Cargar sucursales al iniciar el programa
+	cargarSucursalesDesdeArchivo();// Cargar sucursales al iniciar el programa
 	Grafo* grafo = crearGrafo(MAX_SUCURSALES);
 	
 	int nodoCentral = 0; // El nodo central puede ser el primero, o el que elijas, generalmente el de indice 0
 	inicializarGrafoConCentral(grafo, nodoCentral);
+	cargarRutasDesdeArchivo(grafo);
 	int opmenu;
 	do {
 		cout << "**************************************" << endl;

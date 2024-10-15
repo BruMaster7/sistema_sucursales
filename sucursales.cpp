@@ -4,6 +4,7 @@
 #include <cstring>  // Para funciones de manejo de cadenas
 #include <cstdio>   // Para funciones de entrada/salida estándar
 #include <fstream>  // Para manejo de archivos
+#include <sstream>
 
 
 using namespace std;
@@ -40,10 +41,27 @@ void sucursalesActuales() {
 // Función para ingresar el ID
 int ingresarId() {
 	int id;
-	cout << "Ingrese el ID de la sucursal que desea modificar: " << endl;
+	cout << "Ingrese el ID de la sucursal: " << endl;
 	cin >> id;
 	return id;
 }
+//Void para cuando no se encuentra la ID que seleccionó el usuario
+void IdNoEncontrada(int id){
+	cout << "**************************************" << endl;
+	cout << "Sucursal con ID " << id << " no encontrada" << endl;
+	cout << "**************************************" << endl;
+	system("pause");
+	system("cls");
+}
+
+void mostrarSucursalesConId() {
+		cout << "IDs de las Sucursales actuales:" << endl;
+		for (int i = 0; i < contadorSucursales; i++) {
+			cout << "ID: " << sucursales[i].sucursal.id
+				<< " -" << sucursales[i].sucursal.nombre << endl;
+		}
+	}
+	
 
 // Agregar una nueva sucursal
 void agregarSucursal() {
@@ -55,7 +73,6 @@ void agregarSucursal() {
 		system("cls");
 		return;
 	}
-	
 	cout << "*************************************" << endl;
 	sucursales[contadorSucursales].sucursal.id = autoIncrementalID++; // Asignación de ID auto-incremental
 	cout << "Ingrese el nombre de la sucursal: ";
@@ -70,6 +87,7 @@ void agregarSucursal() {
 	cout << "*************************************" << endl;
 	
 	contadorSucursales++;
+	guardarSucursalesEnArchivo();
 	system("pause");
 	system("cls");
 }
@@ -89,16 +107,13 @@ void modificarSucursal(int id) {
 			cout << "Modificar Responsable (Actual: " << sucursales[i].sucursal.responsable << "): ";
 			cin.getline(sucursales[i].sucursal.responsable, 100);
 			cout << "****************************************************************" << endl;
+			guardarSucursalesEnArchivo();
 			system("pause");
 			system("cls");
 			return;
 		}
 	}
-	cout << "**************************************" << endl;
-	cout << "Sucursal con ID " << id << " no encontrada" << endl;
-	cout << "**************************************" << endl;
-	system("pause");
-	system("cls");
+	IdNoEncontrada(id);
 }
 
 // Eliminar una sucursal
@@ -110,16 +125,72 @@ void eliminarSucursal(int id) {
 			}
 			contadorSucursales--;
 			cout << "Sucursal con ID " << id << " eliminada" << endl;
+			guardarSucursalesEnArchivo();
 			system("pause");
 			system("cls");
 			return;
 		}
 	}
-	cout << "**************************************" << endl;
-	cout << "Sucursal con ID " << id << " no encontrada" << endl;
-	cout << "**************************************" << endl;
-	system("pause");
-	system("cls");
+	IdNoEncontrada(id);
 }
 
+// Función para guardar las sucursales en un archivo
+void guardarSucursalesEnArchivo() {
+	ofstream archivo("sucursales/sucursales.txt");
+	if (!archivo) {
+		cerr << "Error al abrir el archivo para guardar." << endl;
+		return;
+	}
+	
+	for (int i = 0; i < contadorSucursales; i++) {
+		archivo << sucursales[i].sucursal.id << ", ";
+		archivo << sucursales[i].sucursal.nombre << ", ";
+		archivo << sucursales[i].sucursal.departamento << ", ";
+		archivo << sucursales[i].sucursal.telefono << ", ";
+		archivo << sucursales[i].sucursal.responsable << "\n";
+	}
+	
+	archivo.close();
+}
+
+
+
+
+void cargarSucursalesDesdeArchivo() {
+	ifstream archivo("sucursales/sucursales.txt");
+	if (!archivo) {
+		cerr << "Error al abrir el archivo para cargar o el archivo no existe." << endl;
+		return;
+	}
+	
+	string linea;
+	while (getline(archivo, linea) && contadorSucursales < MAX_SUCURSALES) {
+		stringstream ss(linea);
+		string idStr, nombreStr, departamentoStr, telefonoStr, responsableStr;
+		
+		// Leer y parsear cada campo separado por comas
+		getline(ss, idStr, ',');
+		sucursales[contadorSucursales].sucursal.id = stoi(idStr);
+		
+		getline(ss, nombreStr, ',');
+		strcpy(sucursales[contadorSucursales].sucursal.nombre, nombreStr.c_str());
+		
+		getline(ss, departamentoStr, ',');
+		strcpy(sucursales[contadorSucursales].sucursal.departamento, departamentoStr.c_str());
+		
+		getline(ss, telefonoStr, ',');
+		strcpy(sucursales[contadorSucursales].sucursal.telefono, telefonoStr.c_str());
+		
+		getline(ss, responsableStr);
+		strcpy(sucursales[contadorSucursales].sucursal.responsable, responsableStr.c_str());
+		
+		contadorSucursales++;
+		if (sucursales[contadorSucursales - 1].sucursal.id >= autoIncrementalID) {
+			autoIncrementalID = sucursales[contadorSucursales - 1].sucursal.id + 1;
+		}
+	}
+	
+	
+	archivo.close();
+}
 

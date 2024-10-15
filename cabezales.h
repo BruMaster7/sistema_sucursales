@@ -50,10 +50,12 @@ extern int autoIncrementalID;
 // Menús
 void sucursalmenu();
 void menu();
+void rutasMenu(Grafo* grafo);
 
 // Sucursales
 void sucursalesActuales();
 int ingresarId();
+void IdNoEncontrada(int id);
 void agregarSucursal();
 void modificarSucursal(int id);
 void eliminarSucursal(int id);
@@ -61,6 +63,7 @@ void eliminarSucursal(int id);
 // Rutas
 void rutasActuales(Grafo* grafo);
 void modificarRuta(Grafo* grafo);
+void eliminarRuta(Grafo* grafo);
 void guardarRutasEnArchivo(Grafo* grafo);
 void cargarRutasDesdeArchivo(Grafo* grafo);
 void rutaOptima();
@@ -68,9 +71,8 @@ void rutaOptima();
 // Grafo y adyacencias
 AdyacenciaNodo* crearNodo(int destino, int peso);
 Grafo* crearGrafo(int V);
-void inicializarGrafoConCentral(Grafo* grafo, int nodoCentral);
 void agregarArista(Grafo* grafo, int src, int dest, int peso);
-void mostrarGrafo(Grafo* grafo);
+void eliminarArista(Grafo* grafo, int src, int dest);
 
 // Utilidades
 int obtenerIndicePorId(int id);

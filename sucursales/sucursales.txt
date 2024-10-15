@@ -1,4 +1,10 @@
-1, Montevideo Repuestos, Montevideo, 0800 3030, Facu Towers
-2, Maldonado Repuestos , Maldonado, 442678876, Washi Aguerre
-3, Lavalleja Repuestos, Lavalleja, 444213321, Loco Abreu
-4, Chuy Repuestos, Rocha, 44598217, Matheus Babi
+1,   Montevideo Repuestos,   Montevideo,  42252886,  Lucas Rodriguez, 
+2,  Aigua Repuestos,  Maldonado,  42252886,  Sofia Juarez
+3,  Maldonado Repuestos,  Maldonado,  42252886,  Lucas Sosa
+4,  Mariscala Repuestos,  Lavalleja,  42252886,  Luciana Lopez
+5,  Minas Repuestos,  Lavalleja,  42252886,  Micaela Garcia
+6,  Rocha Repuestos,  Rocha,  42252886,  Luciano Silvera
+7,  Rio Negro Repuestos,  Rio Negro,  42252886,  Antonela Sosa
+8,  Colonia Repuestos,  Colonia,  42252886,  Esteban Pereira
+9, Lascano Repuestos, Rocha, 44758990, Valeria Sanguinetti
+10, Chuy Repuestos, Rocha, 44678090, Juninho Pernambucano

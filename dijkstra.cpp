@@ -5,50 +5,69 @@ typedef pair<int, int> iPair;
 
 // Function to print shortest paths from source
 void shortestPath(Grafo* grafo, int src) {
-	// Create a priority queue to store vertices being processed
-	// Priority queue sorted by the first element of the pair (distance)
 	priority_queue<iPair, vector<iPair>, greater<iPair>> pq;
+	vector<int> dist(contadorSucursales, INF), prev(contadorSucursales, -1);
 	
-	// Create a vector to store distances and initialize all distances as INF
-	vector<int> dist(contadorSucursales, INF);
-	
-	// Insert source into priority queue and initialize its distance as 0
-	pq.push(make_pair(0, src));
+	pq.push({0, src});
 	dist[src] = 0;
-	// Process the priority queue
-	while (!pq.empty()) {
 	
-		// Get the vertex with the minimum distance
+	while (!pq.empty()) {
 		int u = pq.top().second;
 		pq.pop();
 		
-		// Iterate through all adjacent vertices of the current vertex
-		
-			for (auto &neighbor : grafo->listaAdyacencia[u]) {
-				if (grafo->listaAdyacencia[u].empty()) {
-					return;
-				}
+		for (auto &neighbor : grafo->listaAdyacencia[u]) {
+			int v = neighbor->destino, weight = neighbor->peso;
 			
-				int v = neighbor->destino;
-				
-				int weight = neighbor->peso;
-				
-				// If a shorter path to v is found
-				if (dist[v] > dist[u] + weight) {
-					// Update distance and push new distance to the priority queue
-					dist[v] = dist[u] + weight;
-					pq.push(make_pair(dist[v], v));
-				}
+			if (dist[v] > dist[u] + weight) {
+				dist[v] = dist[u] + weight;
+				prev[v] = u; 
+				pq.push({dist[v], v});
 			}
-		
+		}
 	}
 	
-	// Print the shortest distances
-	cout << "El camino mas corto entre las sucursales es: " << endl;
-	for (int i = 0; i < contadorSucursales; ++i)
-		cout << i << " \t\t " << dist[i] << "kilometros" << endl;
+	int idDest;
+	cout << "¿A qué sucursal deseas ir? (Ingresa el ID de la sucursal)" << endl;
+	cin >> idDest;
+	int dest = obtenerIndicePorId(idDest);
+	if (idDest == 1){
+		cout<<"No hay camino desde la central hacia si misma\n";
+		system("pause");
+		system("cls");
+		return;
+	}
+	if (dest == -1) {
+		cout << "Error: la sucursal no fue encontrada" << endl;
+		system("pause");
+		system("cls");
+		return;
+	}
+	
+	cout << "El camino más corto hacia la sucursal " << sucursales[dest].sucursal.nombre <<" es de: " << dist[dest] << " kilómetros" << endl;
+	
+	vector<int> path;
+	for (int v = dest; v != -1; v = prev[v]) {
+		path.push_back(v);
+	}
+	reverse(path.begin(), path.end());
+	
+	cout << "El camino es: \n";
+	for (size_t i = 0; i < path.size(); ++i) {
+		cout << sucursales[path[i]].sucursal.nombre;
+		if (i < path.size() - 1) {
+			int next = path[i + 1], distance = INF;
+			for (auto &neighbor : grafo->listaAdyacencia[path[i]]) {
+				if (neighbor->destino == next) {
+					distance = neighbor->peso;
+					break;
+				}
+			}
+			cout << " -> Distancia hasta " << sucursales[next].sucursal.nombre << ": " << distance << " kilómetros" << endl;
+		} else {
+			cout << endl;
+		}
+	}
 	
 	system("pause");
 	system("cls");
 }
-

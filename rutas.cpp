@@ -29,19 +29,8 @@ Grafo* crearGrafo(int v) {
 	// Crear un arreglo de listas de adyacencia. El tamaño del arreglo es v
 	grafo->listaAdyacencia = new list<AdyacenciaNodo*>[v];
 	
-	// Inicializar cada lista de adyacencia como vacía
-	//for (int i = 0; i < v; ++i)
-		//grafo->listaAdyacencia[i] = nullptr;
 	
 	return grafo;
-}
-
-void inicializarGrafoConCentral(Grafo* grafo, int nodoCentral) {
-	for (int i = 0; i < grafo->numSucursales; ++i) {
-		if (i != nodoCentral) { // Evitar conectar el nodo central a sí mismo
-			agregarArista(grafo, nodoCentral, i, INF); // 0 es un peso default ya que es la sucursal central
-		}
-	}
 }
 
 // Función para agregar una arista al grafo dirigido
@@ -57,27 +46,27 @@ void agregarArista(Grafo* grafo, int src, int dest, int peso) {
 	AdyacenciaNodo* nuevoNodo = crearNodo(dest, peso);
 	grafo->listaAdyacencia[src].push_back(nuevoNodo);
 }
-
-// Función para mostrar las listas de adyacencia del grafo
-void mostrarGrafo(Grafo* grafo) {
-	for (int v = 0; v < grafo->numSucursales; ++v) {
-		for (auto &nodo : grafo->listaAdyacencia[v]) {
-			
-			cout << "\n Lista de adyacencia de la sucursal " << v << "\n";
-
-			cout << " -> " << nodo->destino << " (Peso: " << nodo->peso << ")";
-			cout << endl;
+void eliminarArista(Grafo* grafo, int src, int dest) {
+	// Buscar el nodo en la lista de adyacencia de src
+	auto& lista = grafo->listaAdyacencia[src];
+	for (auto it = lista.begin(); it != lista.end(); ++it) {
+		if ((*it)->destino == dest) {
+			// Eliminar el nodo
+			delete *it;  // Liberar memoria
+			lista.erase(it);  // Eliminar de la lista
+			return;
 		}
 	}
 }
-
 // Funciones de rutas
 void rutasActuales(Grafo* grafo) {
 	cout << "Rutas actuales entre sucursales:" << endl;
 	for (int i = 0; i < contadorSucursales; i++) {  // Iterar sobre las sucursales registradas
-		
-		
 		cout << "Sucursales conectadas desde " << sucursales[i].sucursal.nombre << ":" << endl;
+		
+		// Variable para verificar si hay rutas
+		bool hayRutas = false; // Inicializar como false
+		
 		for (auto &nodoActual : grafo->listaAdyacencia[i]) {
 			int destino = nodoActual->destino;
 			
@@ -85,8 +74,13 @@ void rutasActuales(Grafo* grafo) {
 			if (destino < contadorSucursales) {
 				cout << "  -> " << sucursales[destino].sucursal.nombre 
 					<< " (Kilometros: " << nodoActual->peso << ")" << endl;
+				hayRutas = true; // Cambiar a true si se encuentra una ruta
 			}
-			
+		}
+		
+		// Mensaje cuando no hay rutas
+		if (!hayRutas) {
+			cout << "  -> No hay rutas disponibles." << endl;
 		}
 	}
 	system("pause");
@@ -103,8 +97,43 @@ void modificarRuta(Grafo* grafo) {
 	cin >> idSrc;
 	cout << "Ingrese el ID de la sucursal de destino: ";
 	cin >> idDest;
+	if(idSrc == idDest){
+		cout << "Error: No se puede crear un camino hacia si mismo." << endl;
+		system("pause");
+		system("cls");
+		return;
+	}
 	cout << "Ingrese la distancia de la ruta: ";
 	cin >> peso;
+	
+	// Convertir ID a índice
+	int src = obtenerIndicePorId(idSrc);
+	int dest = obtenerIndicePorId(idDest);
+	
+	if (src == -1 || dest == -1) {
+		cout << "Error: una o ambas sucursales no fueron encontradas." << endl;
+		system("pause");
+		system("cls");
+		return;
+	}
+	agregarArista(grafo, src, dest, peso);
+	guardarRutasEnArchivo(grafo);
+	cout << "Ruta modificada/añadida exitosamente." << endl;
+	system("pause");
+	system("cls");
+}
+
+// Función para eliminar una ruta entre dos sucursales
+void eliminarRuta(Grafo* grafo) {
+	system("cls");
+	
+	mostrarSucursalesConId();
+	
+	int idSrc, idDest;
+	cout << "Ingrese el ID de la sucursal de origen: ";
+	cin >> idSrc;
+	cout << "Ingrese el ID de la sucursal de destino: ";
+	cin >> idDest;
 	
 	// Convertir ID a índice
 	int src = obtenerIndicePorId(idSrc);
@@ -115,77 +144,15 @@ void modificarRuta(Grafo* grafo) {
 		return;
 	}
 	
-	agregarArista(grafo, src, dest, peso);
-	guardarRutasEnArchivo(grafo);
-	cout << "Ruta modificada/añadida exitosamente." << endl;
+	eliminarArista(grafo, src, dest);
+	guardarRutasEnArchivo(grafo);  // Guardar cambios en el archivo
+	cout << "Ruta eliminada exitosamente." << endl;
 	system("pause");
 	system("cls");
 }
 
-
 void rutaOptima(Grafo* grafo) {
 	shortestPath(grafo, 0);
-}
-
-
-// Función para guardar las sucursales en un archivo
-void guardarSucursalesEnArchivo() {
-	ofstream archivo("sucursales/sucursales.txt");
-	if (!archivo) {
-		cerr << "Error al abrir el archivo para guardar." << endl;
-		return;
-	}
-	
-	for (int i = 0; i < contadorSucursales; i++) {
-		archivo << sucursales[i].sucursal.id << ", ";
-		archivo << sucursales[i].sucursal.nombre << ", ";
-		archivo << sucursales[i].sucursal.departamento << ", ";
-		archivo << sucursales[i].sucursal.telefono << ", ";
-		archivo << sucursales[i].sucursal.responsable << "\n";
-	}
-	
-	archivo.close();
-}
-
-
-
-
-void cargarSucursalesDesdeArchivo() {
-	ifstream archivo("sucursales/sucursales.txt");
-	if (!archivo) {
-		cerr << "Error al abrir el archivo para cargar o el archivo no existe." << endl;
-		return;
-	}
-	
-	string linea;
-	while (getline(archivo, linea) && contadorSucursales < MAX_SUCURSALES) {
-		stringstream ss(linea);
-		string idStr, nombreStr, departamentoStr, telefonoStr, responsableStr;
-		
-		// Leer y parsear cada campo separado por comas
-		getline(ss, idStr, ',');
-		sucursales[contadorSucursales].sucursal.id = stoi(idStr);
-		
-		getline(ss, nombreStr, ',');
-		strcpy(sucursales[contadorSucursales].sucursal.nombre, nombreStr.c_str());
-		
-		getline(ss, departamentoStr, ',');
-		strcpy(sucursales[contadorSucursales].sucursal.departamento, departamentoStr.c_str());
-		
-		getline(ss, telefonoStr, ',');
-		strcpy(sucursales[contadorSucursales].sucursal.telefono, telefonoStr.c_str());
-		
-		getline(ss, responsableStr);
-		strcpy(sucursales[contadorSucursales].sucursal.responsable, responsableStr.c_str());
-		
-		contadorSucursales++;
-		if (sucursales[contadorSucursales - 1].sucursal.id >= autoIncrementalID) {
-			autoIncrementalID = sucursales[contadorSucursales - 1].sucursal.id + 1;
-		}
-	}
-	
-	
-	archivo.close();
 }
 
 
@@ -253,12 +220,4 @@ int obtenerIndicePorId(int id) {
 		}
 	}
 	return -1; // Retornar -1 si no se encuentra la sucursal
-}
-
-void mostrarSucursalesConId() {
-	cout << "IDs de las Sucursales registradas:" << endl;
-	for (int i = 0; i < contadorSucursales; i++) {
-		cout << "ID: " << sucursales[i].sucursal.id
-			<< " -" << sucursales[i].sucursal.nombre << endl;
-	}
 }
